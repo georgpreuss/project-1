@@ -10,6 +10,11 @@ body {
   margin: 0;
 }
 
+.vessel-icons {
+  display: flex;
+  flex-direction: column;
+}
+
 .grid {
   align-items: center;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
@@ -32,6 +37,27 @@ body {
 
 .grid div.vessel {
   background-color: black;
+  background-size: 300px;
+  background-position-x: 0;
+  background-position-y: 0;
+}
+
+.grid div.vessel-hover {
+  border: 3px solid red;
+  background-size: 300px;
+  background-position-x: 0;
+  background-position-y: 0;
+}
+
+.grid div.hit {
+  background-color: red;
+  background-size: 300px;
+  background-position-x: 0;
+  background-position-y: 0;
+}
+
+.grid div.miss {
+  background-color: green;
   background-size: 300px;
   background-position-x: 0;
   background-position-y: 0;
