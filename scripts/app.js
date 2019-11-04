@@ -7,13 +7,12 @@ function functionName() {
   // html grids
   const humanGrid = document.querySelector('#human')
   const machineGrid = document.querySelector('#machine')
-  // console.log(humanGrid)
 
-  // randomly generated coordinates
+  // variables to store randomly generated coordinates
   let randomX
   let randomY
 
-  // randomly generated orientation (horizontal or vertical)
+  // randomly generated orientation (0 for horizontal or 1 for vertical)
   let orientation = 0
 
   // properties of vessels
@@ -29,26 +28,18 @@ function functionName() {
     name: 'cruiser',
     length: 3
   }
-  const destroyer1 = {
+  const destroyer = {
     name: 'destroyer',
+    length: 3
+  }
+  const submarine = {
+    name: 'submarine',
     length: 2
   }
-  const destroyer2 = {
-    name: 'destroyer',
-    length: 2
-  }
-  const submarine1 = {
-    name: 'submarine',
-    length: 1
-  }
-  const submarine2 = {
-    name: 'submarine',
-    length: 1
-  }
 
-  const armada = [carrier, battleship, cruiser, destroyer1, destroyer2, submarine1, submarine2]
+  const armada = [carrier, battleship, cruiser, destroyer, submarine]
 
-  // create empty arrays that will store information of gameplay
+  // array to store position of computer's armada
   // 0 = water, 1 = part of vessel, 2 = hit, 3 = miss
 
   const computerBoard = [
@@ -64,11 +55,24 @@ function functionName() {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   ]
 
-
-  // let machineCell
-
-  const cellState = []
-
+  // if time allows replace computerBoard with array of arrays of objects, i.e.
+  // const computerBoard = [
+  // [{},{},{},{},{},{},{},{},{},{}],
+  // [{},{},{},{},{},{},{},{},{},{}],
+  // [{},{},{},{},{},{},{},{},{},{}],
+  // [{},{},{},{},{},{},{},{},{},{}],
+  // [{},{},{},{},{},{},{},{},{},{}],
+  // [{},{},{},{},{},{},{},{},{},{}],
+  // [{},{},{},{},{},{},{},{},{},{}],
+  // [{},{},{},{},{},{},{},{},{},{}],
+  // [{},{},{},{},{},{},{},{},{},{}],
+  // [{},{},{},{},{},{},{},{},{},{}]
+  // ]
+  // each object should contain this at start:
+  // {contains: water,
+  // fire-upon: false,
+  // damage: 0
+  // }
 
   // create html elements with xy coordinates for each of the gameboards
   for (let y = 0; y < cols; y++) {
@@ -83,23 +87,12 @@ function functionName() {
       // give each div element a coordinate
       machineCell.id = 'c' + x + ',' + y
       humanCell.id = x + ',' + y
-
-      // push coordinates into 2d array
-      // machineCells.push([x, y])
-      // machineCells.push(y)
-
-      // humanCells.push([x, y])
-
-      // show me coordinates to test it's working
-      // machineCell.innerHTML = machineCell.id
-      // humanCell.innerHTML = humanCell.id
-
     }
   }
-  
-  
-  const machineGridArray = Array.from(machineGrid.children)
-  
+
+
+  // const machineGridArray = Array.from(machineGrid.children)
+
   // function to randomly select starting coordinates for placement of vessels for given orientation and vessel length
   function anchor(vessel) {
     // generate random number for orientation - 0 for horizontal, 1 for vertical
@@ -177,15 +170,14 @@ function functionName() {
 
   }
 
-  const button = document.querySelector('.magic')
-  // if player has placed all vessels show start button
+  const startButton = document.querySelector('.commence')
 
   const playerTurn = document.querySelector('#turn')
 
   let computerHit = 1
   let playerHit = 1
   let turn
-  button.addEventListener('click', () => {
+  startButton.addEventListener('click', () => {
     deployFleet()
     // random generator to determine who starts: 0 for computer, 1 for player
     turn = Math.floor(Math.random() * 2)
@@ -324,27 +316,32 @@ function functionName() {
       e.target.classList.toggle('vessel')
     })
     div.addEventListener('click', (e) => {
-      if (turn === 0) return
-      // if cell clicked extract coordinates
-      const checkX = e.target.id.split('')[1]
-      const checkY = e.target.id.split('')[3]
-      console.log('checkX is ', checkX)
-      console.log('checkY is ', checkY)
-      // check value of cell clicked
-      if (computerBoard[checkY][checkX] === 0) {
-        // look up 1d index containing same y,x
-        // if cell value is 0 add class miss, else add class hit
-        document.getElementById(`c${checkX},${checkY}`).classList.add('miss')
-        playerHit = 0
-        turn = 0
-        computerTorpedo()
-      } else {
-        document.getElementById(`c${checkX},${checkY}`).classList.add('hit')
-        playerHit = 1
-      }
+      playerTorpedo(e)
     })
   }
 
+  function playerTorpedo(e) {
+    // if (turn === 0) return
+    // if cell clicked extract coordinates
+    const checkX = e.target.id.split('')[1]
+    const checkY = e.target.id.split('')[3]
+    // console.log('checkX is ', checkX)
+    // console.log('checkY is ', checkY)
+    // check value of cell clicked
+    if (computerBoard[checkY][checkX] === 0) {
+      // look up 1d index containing same y,x
+      // if cell value is 0 add class miss, else add class hit
+      document.getElementById(`c${checkX},${checkY}`).classList.add('miss')
+      playerHit = 0
+      turn = 0
+      while (turn === 0) {
+        computerTorpedo()
+      }
+    } else {
+      document.getElementById(`c${checkX},${checkY}`).classList.add('hit')
+      playerHit = 1
+    } return playerHit
+  }
 
   // computerTorpedo function to start with array of all indices
   let cellsNotFiredUpon = Array.from(Array(100).keys())
@@ -362,6 +359,10 @@ function functionName() {
       // if hit vessel set hit to 1
       computerHit = 1
       turn = 0
+      // add below for more AI
+      // while (computerHit === 1) {
+      //   guidedMissile(humanGridArray[cellBeingFiredUpon])
+      // }
     } else {
       // change cell class to miss
       humanGridArray[cellBeingFiredUpon].classList.add('miss')
@@ -372,16 +373,22 @@ function functionName() {
       computerHit = 0
       turn = 1
     }
+    return computerHit, turn
   }
 
-  // document.addEventListener('keypress', (e) => {
-  //   if (e.key === 't') {
-  //     computerTorpedo()
+
+  // function guidedMissile(confirmedHit) {
+  //   // generate random number between 1 and 4 for all directions
+  //   const tryAdjacent = Math.floor(Math.random() * 4)
+  //   switch (tryAdjacent) {
+  //     case 0: // if index above still in cellsNotFiredUpon array try there
+  //     case 1: // if index right still in cellsNotFiredUpon array try there
+  //     case 2: // if index below still in cellsNotFiredUpon array try there
+  //     case 3: // if index left still in cellsNotFiredUpon array try there
   //   }
-  // })
-
-
-
+  //   // if hit keep going in same direction until vessel sunk
+  //   // if miss try other adjacent cells in next round
+  // }
 
 }
 
