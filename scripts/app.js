@@ -49,7 +49,7 @@ function functionName() {
   const armada = [carrier, battleship, cruiser, destroyer1, destroyer2, submarine1, submarine2]
 
   // create empty arrays that will store information of gameplay
-  // const humanBoard =
+  // 0 = water, 1 = part of vessel, 2 = hit, 3 = miss
 
   const computerBoard = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -65,18 +65,12 @@ function functionName() {
   ]
 
 
-  console.log(computerBoard)
-  console.log(computerBoard[0])
-  computerBoard[0][0] = 1
-  console.log(computerBoard)
-  let machineCell
+  // let machineCell
 
-  // at start push 0's to Boards
-  // 0 = water, 1 = part of vessel, 2 = hit, 3 = miss
   const cellState = []
 
 
-  // create html elements for boards
+  // create html elements with xy coordinates for each of the gameboards
   for (let y = 0; y < cols; y++) {
     for (let x = 0; x < rows; x++) {
 
@@ -87,7 +81,7 @@ function functionName() {
       humanGrid.appendChild(humanCell)
 
       // give each div element a coordinate
-      machineCell.id = x + ',' + y
+      machineCell.id = 'c' + x + ',' + y
       humanCell.id = x + ',' + y
 
       // push coordinates into 2d array
@@ -97,18 +91,18 @@ function functionName() {
       // humanCells.push([x, y])
 
       // show me coordinates to test it's working
-      machineCell.innerHTML = machineCell.id
-      humanCell.innerHTML = humanCell.id
+      // machineCell.innerHTML = machineCell.id
+      // humanCell.innerHTML = humanCell.id
 
     }
   }
-  // generate random number for orientation - 0 for horizontal, 1 for vertical
-
-
+  
+  
   const machineGridArray = Array.from(machineGrid.children)
-
+  
   // function to randomly select starting coordinates for placement of vessels for given orientation and vessel length
   function anchor(vessel) {
+    // generate random number for orientation - 0 for horizontal, 1 for vertical
     orientation = Math.floor(Math.random() * 2)
     if (orientation === 0) {
       // if horizontal, limit x coordinates to cols + 1 - vessel length
@@ -119,23 +113,17 @@ function functionName() {
       randomY = Math.floor(Math.random() * (rows + 1 - vessel.length))
       randomX = Math.floor(Math.random() * cols)
     }
-    console.log('randomY is ' + randomY + ' randomX is ' + randomX + ' orientation is ' + orientation + ' vessel is ' + vessel.name)
+    // console.log('randomY is ' + randomY + ' randomX is ' + randomX + ' orientation is ' + orientation + ' vessel is ' + vessel.name)
     return [orientation, randomY, randomX]
   }
 
-  // const test = anchor(carrier,1)
-  // console.log(test)
-  // console.log(test[0])
-  // console.log(test[1])
-
   function checkSpace(vessel, orientation, randomY, randomX) {
     // take random anchor and check adjacent cells for space
-    // let spaceForVessel = 0
-    // debugger;
     if (orientation === 0) {
       for (let i = 0; i < vessel.length; i++) {
         const cellState = computerBoard[randomY][randomX + i]
-        console.log('cell state ', cellState)
+        // console.log('cell state ', cellState)
+        // if any cell is occupied return 0
         if (cellState !== 0) {
           return 0
         }
@@ -143,7 +131,8 @@ function functionName() {
     } else if (orientation === 1) {
       for (let i = 0; i < vessel.length; i++) {
         const cellState = computerBoard[randomY + i][randomX]
-        console.log('cell state ', cellState)
+        // console.log('cell state ', cellState)
+        // if any cell is occupied return 0
         if (cellState !== 0) {
           return 0
         }
@@ -156,24 +145,18 @@ function functionName() {
     if (orientation === 0) {
       for (let i = 0; i < vessel.length; i++) {
         computerBoard[randomY][randomX + i] = 1
-        const location = [randomY, randomX + i].toString()
-        console.log(location)
-        // change corresponding cell's background color to check if working
-        // document.getElementById(`${location}`).classList.add('.vessel')
+        // const location = [randomY, randomX + i].toString()
+        // console.log(location)
       }
     } else {
       for (let i = 0; i < vessel.length; i++) {
         computerBoard[randomY + i][randomX] = 1
-        const location = [randomY + i, randomX].toString()
-        console.log(location)
-        // change corresponding cell's background color to check if working
-        // document.getElementById(`${location}`).classList.add('.vessel')
+        // const location = [randomY + i, randomX].toString()
+        // console.log(location)
       }
     }
   }
 
-  console.log(plonkShip(carrier, 0, 1, 3))
-  console.log(computerBoard)
 
   function deployFleet() {
     armada.forEach((vessel) => {
@@ -181,12 +164,12 @@ function functionName() {
       while (deployed === false) {
         const anchorOut = anchor(vessel)
         if (checkSpace(vessel, anchorOut[0], anchorOut[1], anchorOut[2]) === 1) {
-          console.log('checkSpace for ' + vessel.name + ' is ' + checkSpace(vessel, anchorOut[0], anchorOut[1], anchorOut[2]))
+          // console.log('checkSpace for ' + vessel.name + ' is ' + checkSpace(vessel, anchorOut[0], anchorOut[1], anchorOut[2]))
           plonkShip(vessel, anchorOut[0], anchorOut[1], anchorOut[2])
           deployed = true
         } else {
           deployed = false
-          console.log('checkSpace for ' + vessel.name + ' is ' + checkSpace(vessel, anchorOut[0], anchorOut[1], anchorOut[2]))
+          // console.log('checkSpace for ' + vessel.name + ' is ' + checkSpace(vessel, anchorOut[0], anchorOut[1], anchorOut[2]))
         }
       }
     })
@@ -195,18 +178,40 @@ function functionName() {
   }
 
   const button = document.querySelector('.magic')
+  // if player has placed all vessels show start button
 
+  const playerTurn = document.querySelector('#turn')
+
+  let computerHit = 1
+  let playerHit = 1
+  let turn
   button.addEventListener('click', () => {
     deployFleet()
+    // random generator to determine who starts: 0 for computer, 1 for player
+    turn = Math.floor(Math.random() * 2)
+    // say who starts: computer or player
+    // let turn = 0
+    console.log(turn)
+    // computer's turn
+    while (turn === 0) {
+      playerTurn.innerHTML = 'Computer\'s turn'
+      // say computer's turn
+      // add timeout
+      // keep firing torpedo's until miss
+      while (computerHit === 1) {
+        computerTorpedo()
+      }
+      // say player's turn
+      // allow clicks until miss
+      // while (playerHit === 1) {
+      //   // put eventlistener here to allow clicking cells?
+      //   // console.log('yo')
+      // }
+      // turn = 0
+    }
   })
 
-  // console.log(typeof(machineGrid.children))
-  // console.log(machineGrid.children)
-  // console.log(Object.keys(machineGrid.children))
-  // console.log(typeof(machineCell))
-
-
-  const vesselButtons = document.querySelector('.vessel-icons').children
+  const vesselButtons = document.querySelector('.player-info').children
   // console.log(vesselButtons)
 
   let vesselSelected
@@ -218,14 +223,14 @@ function functionName() {
   document.addEventListener('keydown', (e) => {
     if (e.keyCode === 32) {
       orientationPlayerVessel = 1
-      console.log(orientationPlayerVessel)
+      // console.log(orientationPlayerVessel)
     }
   })
   // if space bar key up set orientation to horizontal
   document.addEventListener('keyup', (e) => {
     if (e.keyCode === 32) {
       orientationPlayerVessel = 0
-      console.log(orientationPlayerVessel)
+      // console.log(orientationPlayerVessel)
     }
   })
 
@@ -233,26 +238,14 @@ function functionName() {
     button.addEventListener('click', (e) => {
       sizeOfVesselSelected = e.target.value
       vesselSelected = e.target.innerHTML
-      console.log(sizeOfVesselSelected)
-      console.log(vesselSelected)
+      // console.log(sizeOfVesselSelected)
+      // console.log(vesselSelected)
     })
   }
-
-  // for vessel selected grab size
-  // highlight adjacent cells to right if horizontal, below if vertical
-
-  // console.log(humanGrid.children)
-  // console.log(Array.from(humanGrid.children))
 
 
   // create array of humanGrid html elements so I can manipulate by index
   const humanGridArray = Array.from(humanGrid.children)
-
-  // document.addEventListener('keydown', (e) => {
-  //   console.log(e.keyCode)
-  // })
-
-
 
   // add eventListeners for each cell in grid
   for (const div of humanGrid.children) {
@@ -289,14 +282,15 @@ function functionName() {
 
     div.addEventListener('click', (e) => {
       console.log('Is this a valid position??? :', validPosition(e.target.id, sizeOfVesselSelected, orientation))
+      // if (validPosition(e.target.id, sizeOfVesselSelected, orientation)) return
       const indexMousePosition = Array.from(humanGrid.children).indexOf(e.target)
       if (orientationPlayerVessel === 0) {
         for (let i = 0; i < sizeOfVesselSelected; i++) {
           humanGridArray[indexMousePosition + i].classList.add('vessel')
           humanGridArray[indexMousePosition + i].setAttribute('vessel-name', `${vesselSelected}`)
           // remove button of vessel if last of vessel class just deployed
-          console.log(Array.from(vesselButtons).indexOf(vesselSelected))
-          console.log(Array.from(vesselButtons))
+          // console.log(Array.from(vesselButtons).indexOf(vesselSelected))
+          // console.log(Array.from(vesselButtons))
         }
       } else {
         for (let i = 0; i < sizeOfVesselSelected; i++) {
@@ -321,23 +315,39 @@ function functionName() {
     }
   }
 
-  console.log(sizeOfVesselSelected)
-
   for (const div of machineGrid.children) {
     div.addEventListener('mouseover', (e) => {
-      console.log(e.target.innerHTML)
+      // console.log(e.target.innerHTML)
       e.target.classList.toggle('vessel')
     })
     div.addEventListener('mouseout', (e) => {
       e.target.classList.toggle('vessel')
     })
+    div.addEventListener('click', (e) => {
+      if (turn === 0) return
+      // if cell clicked extract coordinates
+      const checkX = e.target.id.split('')[1]
+      const checkY = e.target.id.split('')[3]
+      console.log('checkX is ', checkX)
+      console.log('checkY is ', checkY)
+      // check value of cell clicked
+      if (computerBoard[checkY][checkX] === 0) {
+        // look up 1d index containing same y,x
+        // if cell value is 0 add class miss, else add class hit
+        document.getElementById(`c${checkX},${checkY}`).classList.add('miss')
+        playerHit = 0
+        turn = 0
+        computerTorpedo()
+      } else {
+        document.getElementById(`c${checkX},${checkY}`).classList.add('hit')
+        playerHit = 1
+      }
+    })
   }
 
 
-  // test computerTorpedo
-  // start with array of all indices
+  // computerTorpedo function to start with array of all indices
   let cellsNotFiredUpon = Array.from(Array(100).keys())
-  console.log(cellsNotFiredUpon)
 
   function computerTorpedo() {
     // pick one at random and fire
@@ -349,20 +359,28 @@ function functionName() {
       // if hit, then remove that index from array
       cellsNotFiredUpon.splice(cellsNotFiredUpon.indexOf(cellBeingFiredUpon), 1)
       console.log(cellsNotFiredUpon)
+      // if hit vessel set hit to 1
+      computerHit = 1
+      turn = 0
     } else {
       // change cell class to miss
       humanGridArray[cellBeingFiredUpon].classList.add('miss')
       // remove number from array
       cellsNotFiredUpon.splice(cellsNotFiredUpon.indexOf(cellBeingFiredUpon), 1)
       console.log(cellsNotFiredUpon)
+      // if hit unsuccessful set hit to 0
+      computerHit = 0
+      turn = 1
     }
   }
 
-  document.addEventListener('keypress', (e) => {
-    if (e.key === 't') {
-      computerTorpedo()
-    }
-  })
+  // document.addEventListener('keypress', (e) => {
+  //   if (e.key === 't') {
+  //     computerTorpedo()
+  //   }
+  // })
+
+
 
 
 }

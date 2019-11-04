@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,16 +9,22 @@
   <link rel="stylesheet" href="styles/main.css">
   <script src="scripts/app.js"></script>
 </head>
+
 <body>
-  <div class="vessel-icons">
-    <button value="5">Battleship</button>
-    <button value="4">Carrier</button>
-    <button value="3">Cruiser</button>
-    <button value="2">Destroyer</button>
-    <button value="1">Submarine</button>
-  </div>
   <div class="grid" id="human"></div>
-  <button class="magic">Place vessels</button>
+  <div class="game-dashboard">
+    <div class="player-info">
+      <button value="5">Battleship</button>
+      <button value="4">Carrier</button>
+      <button value="3">Cruiser</button>
+      <button value="2">Destroyer</button>
+      <button value="1">Submarine</button>
+    </div>
+    <p id="turn">Click button to start</p>
+    <button class="magic">Let Battle Commence</button>
+    <div class="computer-info"></div>
+  </div>
   <div class="grid" id="machine"></div>
 </body>
+
 </html>
