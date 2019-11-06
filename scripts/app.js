@@ -8,72 +8,6 @@ function functionName() {
   const humanGrid = document.querySelector('#human')
   const machineGrid = document.querySelector('#machine')
 
-  // variables to store randomly generated coordinates
-  let randomX
-  let randomY
-
-  // randomly generated orientation (0 for horizontal or 1 for vertical)
-  let orientation = 0
-
-  // properties of vessels
-  const carrier = {
-    name: 'carrier',
-    length: 5
-  }
-  const battleship = {
-    name: 'battleship',
-    length: 4
-  }
-  const cruiser = {
-    name: 'cruiser',
-    length: 3
-  }
-  const destroyer = {
-    name: 'destroyer',
-    length: 3
-  }
-  const submarine = {
-    name: 'submarine',
-    length: 2
-  }
-
-  const armada = [carrier, battleship, cruiser, destroyer, submarine]
-
-  // array to store position of computer's armada
-  // 0 = water, 1 = part of vessel, 2 = hit, 3 = miss
-
-  const computerBoard = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  ]
-
-  // if time allows replace computerBoard with array of arrays of objects, i.e.
-  // const computerBoard = [
-  // [{},{},{},{},{},{},{},{},{},{}],
-  // [{},{},{},{},{},{},{},{},{},{}],
-  // [{},{},{},{},{},{},{},{},{},{}],
-  // [{},{},{},{},{},{},{},{},{},{}],
-  // [{},{},{},{},{},{},{},{},{},{}],
-  // [{},{},{},{},{},{},{},{},{},{}],
-  // [{},{},{},{},{},{},{},{},{},{}],
-  // [{},{},{},{},{},{},{},{},{},{}],
-  // [{},{},{},{},{},{},{},{},{},{}],
-  // [{},{},{},{},{},{},{},{},{},{}]
-  // ]
-  // each object should contain this at start:
-  // {contains: water,
-  // fire-upon: false,
-  // damage: 0
-  // }
-
   // create html elements with xy coordinates for each of the gameboards
   for (let y = 0; y < cols; y++) {
     for (let x = 0; x < rows; x++) {
@@ -87,11 +21,51 @@ function functionName() {
       // give each div element a coordinate
       machineCell.id = 'c' + x + ',' + y
       humanCell.id = x + ',' + y
+
+      // give each div visible coordinates for testing
+      // machineCell.innerHTML = x + ',' + y
+      // humanCell.innerHTML = x + ',' + y
     }
   }
 
+  // variables to store randomly generated coordinates
+  let randomX
+  let randomY
 
-  // const machineGridArray = Array.from(machineGrid.children)
+  // randomly generated orientation (0 for horizontal or 1 for vertical) for placement of computer's vessels
+  let orientation = 0
+
+  // class for vessels
+  class vessel {
+    constructor(name, abb, size) {
+      this.name = name,
+      this.abb = abb,
+      this.size = size
+    }
+  }
+  // properties of vessels
+  const carrier = new vessel('carrier', 'a', 5)
+  const battleship = new vessel('battleship', 'b', 4)
+  const cruiser = new vessel('cruiser', 'c', 3)
+  const destroyer = new vessel('destroyer', 'd', 3)
+  const submarine = new vessel('submarine', 's', 2)
+
+  const armada = [carrier, battleship, cruiser, destroyer, submarine]
+
+  // array to store position of computer's armada
+  // 0 = water, a = aircraft carrier, b = battleship, c = cruiser, d = destroyer, s = submarine, x = sunk part, o = miss
+  const computerBoard = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  ]
 
   // function to randomly select starting coordinates for placement of vessels for given orientation and vessel length
   function anchor(vessel) {
@@ -100,31 +74,28 @@ function functionName() {
     if (orientation === 0) {
       // if horizontal, limit x coordinates to cols + 1 - vessel length
       randomY = Math.floor(Math.random() * rows)
-      randomX = Math.floor(Math.random() * (cols + 1 - vessel.length))
+      randomX = Math.floor(Math.random() * (cols + 1 - vessel.size))
     } else {
       // if vertical, limit y coordinates to rows + 1 - vessel length
-      randomY = Math.floor(Math.random() * (rows + 1 - vessel.length))
+      randomY = Math.floor(Math.random() * (rows + 1 - vessel.size))
       randomX = Math.floor(Math.random() * cols)
     }
-    // console.log('randomY is ' + randomY + ' randomX is ' + randomX + ' orientation is ' + orientation + ' vessel is ' + vessel.name)
     return [orientation, randomY, randomX]
   }
 
+  // take random anchor and check adjacent cells for space
   function checkSpace(vessel, orientation, randomY, randomX) {
-    // take random anchor and check adjacent cells for space
     if (orientation === 0) {
-      for (let i = 0; i < vessel.length; i++) {
+      for (let i = 0; i < vessel.size; i++) {
         const cellState = computerBoard[randomY][randomX + i]
-        // console.log('cell state ', cellState)
         // if any cell is occupied return 0
         if (cellState !== 0) {
           return 0
         }
       }
     } else if (orientation === 1) {
-      for (let i = 0; i < vessel.length; i++) {
+      for (let i = 0; i < vessel.size; i++) {
         const cellState = computerBoard[randomY + i][randomX]
-        // console.log('cell state ', cellState)
         // if any cell is occupied return 0
         if (cellState !== 0) {
           return 0
@@ -136,16 +107,12 @@ function functionName() {
 
   function plonkShip(vessel, orientation, randomY, randomX) {
     if (orientation === 0) {
-      for (let i = 0; i < vessel.length; i++) {
-        computerBoard[randomY][randomX + i] = 1
-        // const location = [randomY, randomX + i].toString()
-        // console.log(location)
+      for (let i = 0; i < vessel.size; i++) {
+        computerBoard[randomY][randomX + i] = vessel.abb
       }
     } else {
-      for (let i = 0; i < vessel.length; i++) {
-        computerBoard[randomY + i][randomX] = 1
-        // const location = [randomY + i, randomX].toString()
-        // console.log(location)
+      for (let i = 0; i < vessel.size; i++) {
+        computerBoard[randomY + i][randomX] = vessel.abb
       }
     }
   }
@@ -157,12 +124,10 @@ function functionName() {
       while (deployed === false) {
         const anchorOut = anchor(vessel)
         if (checkSpace(vessel, anchorOut[0], anchorOut[1], anchorOut[2]) === 1) {
-          // console.log('checkSpace for ' + vessel.name + ' is ' + checkSpace(vessel, anchorOut[0], anchorOut[1], anchorOut[2]))
           plonkShip(vessel, anchorOut[0], anchorOut[1], anchorOut[2])
           deployed = true
         } else {
           deployed = false
-          // console.log('checkSpace for ' + vessel.name + ' is ' + checkSpace(vessel, anchorOut[0], anchorOut[1], anchorOut[2]))
         }
       }
     })
@@ -178,33 +143,19 @@ function functionName() {
   let playerHit = 1
   let turn
   startButton.addEventListener('click', () => {
+    // remove event listeners for playerBoard!
     deployFleet()
     // random generator to determine who starts: 0 for computer, 1 for player
     turn = Math.floor(Math.random() * 2)
-    // say who starts: computer or player
-    // let turn = 0
-    console.log(turn)
-    // computer's turn
     while (turn === 0) {
       playerTurn.innerHTML = 'Computer\'s turn'
-      // say computer's turn
-      // add timeout
-      // keep firing torpedo's until miss
       while (computerHit === 1) {
         computerTorpedo()
       }
-      // say player's turn
-      // allow clicks until miss
-      // while (playerHit === 1) {
-      //   // put eventlistener here to allow clicking cells?
-      //   // console.log('yo')
-      // }
-      // turn = 0
     }
   })
 
   const vesselButtons = document.querySelector('.player-info').children
-  // console.log(vesselButtons)
 
   let vesselSelected
   let sizeOfVesselSelected
@@ -215,14 +166,12 @@ function functionName() {
   document.addEventListener('keydown', (e) => {
     if (e.keyCode === 32) {
       orientationPlayerVessel = 1
-      // console.log(orientationPlayerVessel)
     }
   })
   // if space bar key up set orientation to horizontal
   document.addEventListener('keyup', (e) => {
     if (e.keyCode === 32) {
       orientationPlayerVessel = 0
-      // console.log(orientationPlayerVessel)
     }
   })
 
@@ -230,11 +179,8 @@ function functionName() {
     button.addEventListener('click', (e) => {
       sizeOfVesselSelected = e.target.value
       vesselSelected = e.target.innerHTML
-      // console.log(sizeOfVesselSelected)
-      // console.log(vesselSelected)
     })
   }
-
 
   // create array of humanGrid html elements so I can manipulate by index
   const humanGridArray = Array.from(humanGrid.children)
@@ -320,17 +266,16 @@ function functionName() {
     })
   }
 
+  const showScore = document.querySelector('.score')
+  let score = 0
+
   function playerTorpedo(e) {
-    // if (turn === 0) return
     // if cell clicked extract coordinates
     const checkX = e.target.id.split('')[1]
     const checkY = e.target.id.split('')[3]
-    // console.log('checkX is ', checkX)
-    // console.log('checkY is ', checkY)
     // check value of cell clicked
     if (computerBoard[checkY][checkX] === 0) {
-      // look up 1d index containing same y,x
-      // if cell value is 0 add class miss, else add class hit
+      // if cell value is 0 add class miss
       document.getElementById(`c${checkX},${checkY}`).classList.add('miss')
       playerHit = 0
       turn = 0
@@ -338,30 +283,39 @@ function functionName() {
         computerTorpedo()
       }
     } else {
+      // if cell value is !0 add class hit
       document.getElementById(`c${checkX},${checkY}`).classList.add('hit')
+      score += 10
+      showScore.innerHTML = score
       playerHit = 1
     } return playerHit
   }
 
   // computerTorpedo function to start with array of all indices
+  // this array will be reduced to not fire on the same cell more than once
   let cellsNotFiredUpon = Array.from(Array(100).keys())
 
+  let computerScore = 0
   function computerTorpedo() {
     // pick one at random and fire
     const cellBeingFiredUpon = cellsNotFiredUpon[Math.floor(Math.random() * cellsNotFiredUpon.length)]
     // console.log(cellBeingFiredUpon)
-    // if class = vessel register as hit
+    // if class === vessel register as hit
     if (humanGridArray[cellBeingFiredUpon].classList.contains('vessel')) {
       humanGridArray[cellBeingFiredUpon].classList.add('hit')
       // if hit, then remove that index from array
-      cellsNotFiredUpon.splice(cellsNotFiredUpon.indexOf(cellBeingFiredUpon), 1)
-      console.log(cellsNotFiredUpon)
+      const lastHitLocation = cellsNotFiredUpon.indexOf(cellBeingFiredUpon)
+      cellsNotFiredUpon.splice(lastHitLocation, 1)
+      // console.log('just fired upon ', lastHitLocation)
+      // console.log(cellsNotFiredUpon)
       // if hit vessel set hit to 1
+      computerScore += 10
       computerHit = 1
       turn = 0
       // add below for more AI
       // while (computerHit === 1) {
-      //   guidedMissile(humanGridArray[cellBeingFiredUpon])
+      // console.log('guideMissile function input value is ', lastHitLocation)
+      guidedMissile(lastHitLocation)
       // }
     } else {
       // change cell class to miss
@@ -377,18 +331,19 @@ function functionName() {
   }
 
 
-  // function guidedMissile(confirmedHit) {
-  //   // generate random number between 1 and 4 for all directions
-  //   const tryAdjacent = Math.floor(Math.random() * 4)
-  //   switch (tryAdjacent) {
-  //     case 0: // if index above still in cellsNotFiredUpon array try there
-  //     case 1: // if index right still in cellsNotFiredUpon array try there
-  //     case 2: // if index below still in cellsNotFiredUpon array try there
-  //     case 3: // if index left still in cellsNotFiredUpon array try there
-  //   }
-  //   // if hit keep going in same direction until vessel sunk
-  //   // if miss try other adjacent cells in next round
-  // }
+  function guidedMissile(lastHitLocation) {
+    // generate random number between 1 and 4 for all directions
+    // const tryAdjacent = Math.floor(Math.random() * 4)
+    const tryAdjacent = 0
+    const cellAbove = cellsNotFiredUpon.includes(lastHitLocation - cols)
+    const cellRight = cellsNotFiredUpon.includes(lastHitLocation + 1)
+    const cellBelow = cellsNotFiredUpon.includes(lastHitLocation + cols)
+    const cellLeft = cellsNotFiredUpon.includes(lastHitLocation - 1)
+    console.log('torpedo just fired upon ', lastHitLocation, 'coordinates are ', humanGridArray[lastHitLocation].id)
+    console.log('cells not fired upon include ', cellsNotFiredUpon)
+    console.log('direction (0 above, 1 right, 2 below, 3 left) is ', tryAdjacent)
+    console.log('cellAbove fired upon ', cellAbove, 'cellRight fired upon ', cellRight, 'cellBelow fired upon ', cellBelow, 'cellLeft fired upon ', cellLeft)
+  }
 
 }
 

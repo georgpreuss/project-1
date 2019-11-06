@@ -7,24 +7,41 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Project 1</title>
   <link rel="stylesheet" href="styles/main.css">
+  <link href="https://fonts.googleapis.com/css?family=Allerta+Stencil&display=swap" rel="stylesheet">
   <script src="scripts/app.js"></script>
 </head>
 
 <body>
-  <div class="grid" id="human"></div>
-  <div class="game-dashboard">
-    <div class="player-info">
-      <button value="5">Carrier</button>
-      <button value="4">Battleship</button>
-      <button value="3">Cruiser</button>
-      <button value="3">Destroyer</button>
-      <button value="2">Submarine</button>
+  <h1>Operation Steel Sabre</h1>
+  <div class="all">
+    <div class="left">
+      <div class="player-info">
+        <button value="5">Carrier</button>
+        <button value="4">Battleship</button>
+        <button value="3">Cruiser</button>
+        <button value="3">Destroyer</button>
+        <button value="2">Submarine</button>
+      </div>
+      <p id="turn">Click button to start</p>
+      <button class="commence">Let Battle Commence</button>
+      <p>Your score is:</p>
+      <p class="score"></p>
+      <div class="computer-info"></div>
+      <div class="gameplay-info">
+        <div class="vessel-icons carrier"></div>
+        <div class="vessel-icons battleship"></div>
+        <div class="vessel-icons cruiser"></div>
+        <div class="vessel-icons destroyer"></div>
+        <div class="vessel-icons submarine"></div>
+      </div>
     </div>
-    <p id="turn">Click button to start</p>
-    <button class="commence">Let Battle Commence</button>
-    <div class="computer-info"></div>
+    <div class="right">
+      <div class="game-3d">
+        <div class="grid" id="machine"></div>
+        <div class="grid" id="human"></div>
+      </div>
+    </div>
   </div>
-  <div class="grid" id="machine"></div>
 </body>
 
 </html>

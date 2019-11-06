@@ -3,33 +3,71 @@
 }
 
 body {
-  align-items: center;
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-  margin: 0;
-}
-
-.player-info {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background-image: url(../images/background.jpg);
+  background-size: cover;
+  /* background-position: center; */
+  font-family: 'Allerta Stencil', sans-serif;
 }
 
-.grid {
+.all {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left {
+  width: 40%;
+  height: 60vh;
+  /* background-color: red; */
+}
+
+.right {
+  width: 60%;
+  height: 60vh;
+  /* background-color: green; */
+  perspective: 450px;
+  perspective-origin: 100% 0;
+}
+
+.game-3d {
+  width: 350px;
+  height: 650px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: translateY(-100px) translateZ(-50px) rotateY(-20deg);
+}
+
+#machine {
   align-items: center;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
   display: flex;
-  flex-grow: 1;
+  /* flex-grow: 1; */
   flex-wrap: wrap;
-  height: 100%;
+  height: 50%;
   justify-content: center;
-  max-height: 600px;
-  max-width: 600px;
+  transform: translateX(0px) translateY(100px) translateZ(-100px);
 }
 
+#human {
+  align-items: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+  display: flex;
+  /* flex-grow: 1; */
+  flex-wrap: wrap;
+  height: 30%;
+  justify-content: center;
+  transform: translateX(2px) rotateX(90deg);
+}
+
+
 .grid div {
-  background-color: white;
-  border: 1px solid lightgrey;
+  background-color: rgba(81, 120, 194,0.3);
+  border: 1px solid rgba(211, 211, 211,0.2);
   flex-grow: 1;
   height: 10%;
   width: 10%;
@@ -43,7 +81,7 @@ body {
 }
 
 .grid div.vessel-hover {
-  border: 3px solid red;
+  border: 1px solid red;
   background-size: 300px;
   background-position-x: 0;
   background-position-y: 0;
@@ -57,8 +95,52 @@ body {
 }
 
 .grid div.miss {
-  background-color: green;
+  background-color: grey;
   background-size: 300px;
   background-position-x: 0;
   background-position-y: 0;
+}
+
+.vessel-icons {
+  background-color: green;
+  display: flex;
+  /* border: 1px solid red; */
+  /* height: inherit; */
+  /* position: relative; */
+}
+
+.carrier {
+  flex-grow: 5;
+  background-image: url(../images/carrier.png);
+  background-size: cover;
+  background-position: bottom;
+}
+
+.battleship {
+  flex-grow: 4;
+  background-image: url(../images/battleship.png);
+  background-size: cover;
+  background-position: bottom;
+  /* align-items: flex-end; */
+}
+
+.cruiser {
+  flex-grow: 3;
+  background-image: url(../images/cruiser.png);
+  background-size: cover;
+  background-position: bottom;
+}
+
+.destroyer {
+  flex-grow: 3;
+  background-image: url(../images/destroyer.png);
+  background-size: cover;
+  background-position: bottom;
+}
+
+.submarine {
+  flex-grow: 2;
+  background-image: url(../images/submarine.png);
+  background-size: cover;
+  background-position: bottom;
 }
