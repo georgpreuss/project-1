@@ -12,36 +12,51 @@
 </head>
 
 <body>
-  <h1>Operation Steel Sabre</h1>
   <div class="all">
-    <div class="left">
-      <div class="player-info">
-        <button value="5">Carrier</button>
-        <button value="4">Battleship</button>
-        <button value="3">Cruiser</button>
-        <button value="3">Destroyer</button>
-        <button value="2">Submarine</button>
-      </div>
-      <p id="turn">Click button to start</p>
-      <button class="commence">Let Battle Commence</button>
-      <p>Your score is:</p>
-      <p class="score"></p>
-      <div class="computer-info"></div>
-      <div class="gameplay-info">
-        <div class="vessel-icons carrier"></div>
-        <div class="vessel-icons battleship"></div>
-        <div class="vessel-icons cruiser"></div>
-        <div class="vessel-icons destroyer"></div>
-        <div class="vessel-icons submarine"></div>
-      </div>
+    <div class="header">
+      <h1>Operation Steel Sabre</h1>
     </div>
-    <div class="right">
-      <div class="game-3d">
-        <div class="grid" id="machine"></div>
-        <div class="grid" id="human"></div>
+    <div class="main">
+      <div class="left">
+        <div class="grid" id="player"></div>
+      </div>
+      <div class="middle">
+        
+        <p id="turn">Click button to start</p>
+        
+        <p>Your score is:</p>
+        <p class="score"></p>
+        <div class="computer-info"></div>
+        <!-- <div class="gameplay-info">
+                  <div class="vessel-icons carrier"></div>
+                  <div class="vessel-icons battleship"></div>
+                  <div class="vessel-icons cruiser"></div>
+                  <div class="vessel-icons destroyer"></div>
+                  <div class="vessel-icons submarine"></div>
+                </div> -->
+        <div class="nuclear-football">
+          <div class="case-back">
+              <div class="player-info">
+                  <button value="0" id="carrier">Carrier</button>
+                  <button value="1" id="battleship">Battleship</button>
+                  <button value="2" id="cruiser">Cruiser</button>
+                  <button value="3" id="destroyer">Destroyer</button>
+                  <button value="4" id="submarine">Submarine</button>
+                </div>
+          </div>
+          <div class="case-bottom">
+              <button class="commence">Let Battle Commence</button>
+          </div>
+        </div>
+      </div>
+      <div class="right">
+        <!-- <div class="game-3d"> -->
+        <div class="grid" id="computer"></div>
+        <!-- </div> -->
       </div>
     </div>
   </div>
+
 </body>
 
 </html>

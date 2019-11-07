@@ -4,36 +4,59 @@ function functionName() {
   const rows = 10
   const cols = 10
 
-  // html grids
-  const humanGrid = document.querySelector('#human')
-  const machineGrid = document.querySelector('#machine')
+  // html element selectors
+  const playerGrid = document.querySelector('#player')
+  const computerGrid = document.querySelector('#computer')
+  const startButton = document.querySelector('.commence')
+  const playerTurn = document.querySelector('#turn')
+  const vesselButtons = document.querySelector('.player-info').children
+  const showScore = document.querySelector('.score')
 
   // create html elements with xy coordinates for each of the gameboards
   for (let y = 0; y < cols; y++) {
     for (let x = 0; x < rows; x++) {
 
       // create a new div for each grid cell
-      const machineCell = document.createElement('div')
-      machineGrid.appendChild(machineCell)
-      const humanCell = document.createElement('div')
-      humanGrid.appendChild(humanCell)
+      const computerCell = document.createElement('div')
+      computerGrid.appendChild(computerCell)
+      const playerCell = document.createElement('div')
+      playerGrid.appendChild(playerCell)
 
       // give each div element a coordinate
-      machineCell.id = 'c' + x + ',' + y
-      humanCell.id = x + ',' + y
+      computerCell.id = 'c' + x + ',' + y
+      playerCell.id = x + ',' + y
 
       // give each div visible coordinates for testing
-      // machineCell.innerHTML = x + ',' + y
-      // humanCell.innerHTML = x + ',' + y
+      // computerCell.innerHTML = x + ',' + y
+      // playerCell.innerHTML = x + ',' + y
     }
   }
 
+  const playerGridArray = Array.from(playerGrid.children)
+  // temporarily store vessel name selected by player when placing vessel on grid
+  let vesselSelected
+  // temporarily store vessel length selected by player when placing vessel on grid
+  let sizeOfVesselSelected
+  // orientation 0 for horizontal and 1 for vertical
+  let orientationPlayerVessel = 0
+  // computerTorpedo function to start with array of all indices
+  // this array will be reduced to not fire on the same cell more than once
+  let cellsNotFiredUpon = Array.from(Array(100).keys())
+  // keep track of player score
+  let score = 0
+  // keep track of computer score
+  let computerScore = 0
   // variables to store randomly generated coordinates
   let randomX
   let randomY
-
   // randomly generated orientation (0 for horizontal or 1 for vertical) for placement of computer's vessels
   let orientation = 0
+  // if computer hit successful go again
+  let computerHit = 1
+  // if player hit successful go again
+  let playerHit = 1
+  // keep track of turns
+  let turn
 
   // class for vessels
   class vessel {
@@ -55,6 +78,21 @@ function functionName() {
   // array to store position of computer's armada
   // 0 = water, a = aircraft carrier, b = battleship, c = cruiser, d = destroyer, s = submarine, x = sunk part, o = miss
   const computerBoard = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  ]
+
+  // array to store position of player's armada
+  // 0 = water, a = aircraft carrier, b = battleship, c = cruiser, d = destroyer, s = submarine, x = sunk part, o = miss
+  const playerBoard = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -106,17 +144,14 @@ function functionName() {
   }
 
   function plonkShip(vessel, orientation, randomY, randomX) {
-    if (orientation === 0) {
-      for (let i = 0; i < vessel.size; i++) {
+    for (let i = 0; i < vessel.size; i++) {
+      if (orientation === 0) {
         computerBoard[randomY][randomX + i] = vessel.abb
-      }
-    } else {
-      for (let i = 0; i < vessel.size; i++) {
+      } else {
         computerBoard[randomY + i][randomX] = vessel.abb
       }
     }
   }
-
 
   function deployFleet() {
     armada.forEach((vessel) => {
@@ -132,130 +167,131 @@ function functionName() {
       }
     })
     console.log(computerBoard)
+    console.log(computerBoard.join(','))
 
   }
 
-  const startButton = document.querySelector('.commence')
+  // player placement of vessels
+  // on click of cell change corresponding values in playerBoard
 
-  const playerTurn = document.querySelector('#turn')
+  let indexMousePosition
 
-  let computerHit = 1
-  let playerHit = 1
-  let turn
   startButton.addEventListener('click', () => {
     // remove event listeners for playerBoard!
+    // for (const div of playerGrid.children) {
+    //   div.removeEventListener('mouseover', false)
+    //   div.removeEventListener('mouseout', false)
+    //   div.removeEventListener('click', false)
+    // }
     deployFleet()
     // random generator to determine who starts: 0 for computer, 1 for player
     turn = Math.floor(Math.random() * 2)
+    playerTurn.innerHTML = 'Flipping coin to determine who starts'
+    // setTimeout(playerTurn.innerHTML = 'Flipping coin to determine who starts', 5000)
+    turn === 0 ? playerTurn.innerHTML = 'Computer starts' : playerTurn.innerHTML = 'You start'
     while (turn === 0) {
-      playerTurn.innerHTML = 'Computer\'s turn'
+      // playerTurn.innerHTML = 'Computer\'s turn'
       while (computerHit === 1) {
         computerTorpedo()
       }
     }
   })
 
-  const vesselButtons = document.querySelector('.player-info').children
-
-  let vesselSelected
-  let sizeOfVesselSelected
-  // orientation 0 for horizontal and 1 for vertical
-  let orientationPlayerVessel = 0
-
   // if space bar key down set orientation to vertical
   document.addEventListener('keydown', (e) => {
     if (e.keyCode === 32) {
       orientationPlayerVessel = 1
+      console.log('orientation vertical')
     }
   })
   // if space bar key up set orientation to horizontal
   document.addEventListener('keyup', (e) => {
     if (e.keyCode === 32) {
       orientationPlayerVessel = 0
+      console.log('orientation horizontal')
     }
   })
 
   for (const button of vesselButtons) {
     button.addEventListener('click', (e) => {
-      sizeOfVesselSelected = e.target.value
-      vesselSelected = e.target.innerHTML
+      sizeOfVesselSelected = armada[e.target.value].size
+      console.log(sizeOfVesselSelected)
+      vesselSelected = armada[e.target.value]
+      // return vesselSelected
+      console.log(vesselSelected)
     })
   }
 
-  // create array of humanGrid html elements so I can manipulate by index
-  const humanGridArray = Array.from(humanGrid.children)
+  // create array of playerGrid html elements so I can manipulate by index
+  // const playerGridArray = Array.from(playerGrid.children)
 
-  // add eventListeners for each cell in grid
-  for (const div of humanGrid.children) {
+  // add eventListeners for each cell in player grid
+  for (const div of playerGrid.children) {
     div.addEventListener('mouseover', (e) => {
       // grab the index of the cell mouse is over
-      const indexMousePosition = Array.from(humanGrid.children).indexOf(e.target)
+      if (!validPosition(e.target.id, sizeOfVesselSelected, orientationPlayerVessel)) return
+      indexMousePosition = Array.from(playerGrid.children).indexOf(e.target)
       // based on vessel selected highlight adjacent cells for length of vessel
       if (orientationPlayerVessel === 0) {
         for (let i = 0; i < sizeOfVesselSelected; i++) {
-          humanGridArray[indexMousePosition + i].classList.toggle('vessel-hover')
+          playerGridArray[indexMousePosition + i].classList.toggle('vessel-hover')
         }
       } else {
         for (let i = 0; i < sizeOfVesselSelected; i++) {
-          // humanGridArray[indexMousePosition + i + 1].classList.remove('vessel')
-          humanGridArray[indexMousePosition + (10 * i)].classList.toggle('vessel-hover')
+          // playerGridArray[indexMousePosition + i + 1].classList.remove('vessel')
+          playerGridArray[indexMousePosition + (10 * i)].classList.toggle('vessel-hover')
         }
       }
     })
 
     div.addEventListener('mouseout', (e) => {
-      const indexMousePosition = Array.from(humanGrid.children).indexOf(e.target)
+      indexMousePosition = Array.from(playerGrid.children).indexOf(e.target)
       if (orientationPlayerVessel === 0) {
         for (let i = 0; i < sizeOfVesselSelected; i++) {
-          humanGridArray[indexMousePosition + i].classList.remove('vessel-hover')
+          playerGridArray[indexMousePosition + i].classList.remove('vessel-hover')
         }
       } else {
         for (let i = 0; i < sizeOfVesselSelected; i++) {
-          // humanGridArray[indexMousePosition + i + 1].classList.remove('vessel')
-          humanGridArray[indexMousePosition + (10 * i)].classList.remove('vessel-hover')
+          playerGridArray[indexMousePosition + (10 * i)].classList.remove('vessel-hover')
         }
       }
-      // e.target.classList.toggle('vessel')
     })
 
     div.addEventListener('click', (e) => {
-      console.log('Is this a valid position??? :', validPosition(e.target.id, sizeOfVesselSelected, orientation))
-      // if (validPosition(e.target.id, sizeOfVesselSelected, orientation)) return
-      const indexMousePosition = Array.from(humanGrid.children).indexOf(e.target)
-      if (orientationPlayerVessel === 0) {
-        for (let i = 0; i < sizeOfVesselSelected; i++) {
-          humanGridArray[indexMousePosition + i].classList.add('vessel')
-          humanGridArray[indexMousePosition + i].setAttribute('vessel-name', `${vesselSelected}`)
-          // remove button of vessel if last of vessel class just deployed
-          // console.log(Array.from(vesselButtons).indexOf(vesselSelected))
-          // console.log(Array.from(vesselButtons))
-        }
-      } else {
-        for (let i = 0; i < sizeOfVesselSelected; i++) {
-          // humanGridArray[indexMousePosition + i + 1].classList.remove('vessel')
-          humanGridArray[indexMousePosition + (10 * i)].classList.add('vessel')
-          humanGridArray[indexMousePosition + (10 * i)].setAttribute('vessel-name', `${vesselSelected}`)
-          // remove button of vessel if last of vessel class just deployed
-          // don't let user place more than number available of each vessel type
-        }
-      }
+      if (!validPosition(e.target.id, sizeOfVesselSelected, orientationPlayerVessel)) return
+      indexMousePosition = Array.from(playerGrid.children).indexOf(e.target)
+      plonkShipPlayer(vesselSelected, orientationPlayerVessel, indexMousePosition)
     })
   }
-
-  function validPosition(id, length, orientation) {
-    // debugger;
-    if (orientation === 0) {
-      const startX = parseInt(id.split(',')[0])
-      const endX = startX + parseInt(length)
-      return endX >= 9 ? false : true
-    } else {
-      return parseInt(id.split(',')[1]) + length > 9 ? true : false
+  
+  function plonkShipPlayer(vessel, orientation, index) {
+    const getX = parseInt(playerGridArray[index].id[0])
+    const getY = parseInt(playerGridArray[index].id[2])
+    for (let i = 0; i < vessel.size; i++) {
+      // if horizontal placement
+      if (orientation === 0) {
+        // replace values along x axis in playerBoard array with vessel.abb
+        playerBoard[getY][getX + i] = vessel.abb
+        playerGridArray[index + i].classList.add('vessel')
+        // if vertical placement
+      } else {
+        // replace values along y axis in playerBoard array with vessel.abb
+        playerBoard[getY + i][getX] = vessel.abb
+        playerGridArray[index + (10 * i)].classList.add('vessel')
+      }
     }
   }
 
-  for (const div of machineGrid.children) {
+  function validPosition(id, length, orientation) {
+    if (orientation === 0) {
+      return parseInt(id.split(',')[0]) + length > cols ? false : true
+    } else {
+      return parseInt(id.split(',')[1]) + length > rows ? false : true
+    }
+  }
+
+  for (const div of computerGrid.children) {
     div.addEventListener('mouseover', (e) => {
-      // console.log(e.target.innerHTML)
       e.target.classList.toggle('vessel')
     })
     div.addEventListener('mouseout', (e) => {
@@ -265,9 +301,6 @@ function functionName() {
       playerTorpedo(e)
     })
   }
-
-  const showScore = document.querySelector('.score')
-  let score = 0
 
   function playerTorpedo(e) {
     // if cell clicked extract coordinates
@@ -280,6 +313,7 @@ function functionName() {
       playerHit = 0
       turn = 0
       while (turn === 0) {
+        playerTurn.innerHTML = 'Your turn'
         computerTorpedo()
       }
     } else {
@@ -291,38 +325,30 @@ function functionName() {
     } return playerHit
   }
 
-  // computerTorpedo function to start with array of all indices
-  // this array will be reduced to not fire on the same cell more than once
-  let cellsNotFiredUpon = Array.from(Array(100).keys())
-
-  let computerScore = 0
   function computerTorpedo() {
     // pick one at random and fire
     const cellBeingFiredUpon = cellsNotFiredUpon[Math.floor(Math.random() * cellsNotFiredUpon.length)]
-    // console.log(cellBeingFiredUpon)
+    console.log('cell being fired upon is ', cellBeingFiredUpon)
     // if class === vessel register as hit
-    if (humanGridArray[cellBeingFiredUpon].classList.contains('vessel')) {
-      humanGridArray[cellBeingFiredUpon].classList.add('hit')
+    if (playerGridArray[cellBeingFiredUpon].classList.contains('vessel')) {
+      playerGridArray[cellBeingFiredUpon].classList.add('hit')
       // if hit, then remove that index from array
       const lastHitLocation = cellsNotFiredUpon.indexOf(cellBeingFiredUpon)
       cellsNotFiredUpon.splice(lastHitLocation, 1)
-      // console.log('just fired upon ', lastHitLocation)
-      // console.log(cellsNotFiredUpon)
       // if hit vessel set hit to 1
       computerScore += 10
       computerHit = 1
       turn = 0
       // add below for more AI
       // while (computerHit === 1) {
-      // console.log('guideMissile function input value is ', lastHitLocation)
-      guidedMissile(lastHitLocation)
+      laserGuidance(cellBeingFiredUpon)
       // }
     } else {
       // change cell class to miss
-      humanGridArray[cellBeingFiredUpon].classList.add('miss')
+      playerGridArray[cellBeingFiredUpon].classList.add('miss')
       // remove number from array
       cellsNotFiredUpon.splice(cellsNotFiredUpon.indexOf(cellBeingFiredUpon), 1)
-      console.log(cellsNotFiredUpon)
+      console.log('cells not fired upon ', cellsNotFiredUpon)
       // if hit unsuccessful set hit to 0
       computerHit = 0
       turn = 1
@@ -330,20 +356,38 @@ function functionName() {
     return computerHit, turn
   }
 
-
-  function guidedMissile(lastHitLocation) {
+  function laserGuidance(lastHitLocation) {
     // generate random number between 1 and 4 for all directions
     // const tryAdjacent = Math.floor(Math.random() * 4)
     const tryAdjacent = 0
-    const cellAbove = cellsNotFiredUpon.includes(lastHitLocation - cols)
-    const cellRight = cellsNotFiredUpon.includes(lastHitLocation + 1)
-    const cellBelow = cellsNotFiredUpon.includes(lastHitLocation + cols)
-    const cellLeft = cellsNotFiredUpon.includes(lastHitLocation - 1)
-    console.log('torpedo just fired upon ', lastHitLocation, 'coordinates are ', humanGridArray[lastHitLocation].id)
+    const cellAbove = !cellsNotFiredUpon.includes(lastHitLocation - cols)
+    const cellRight = !cellsNotFiredUpon.includes(lastHitLocation + 1)
+    const cellBelow = !cellsNotFiredUpon.includes(lastHitLocation + cols)
+    const cellLeft = !cellsNotFiredUpon.includes(lastHitLocation - 1)
+    console.log('torpedo just hit boat on ', lastHitLocation, 'coordinates are ', playerGridArray[lastHitLocation].id)
     console.log('cells not fired upon include ', cellsNotFiredUpon)
     console.log('direction (0 above, 1 right, 2 below, 3 left) is ', tryAdjacent)
     console.log('cellAbove fired upon ', cellAbove, 'cellRight fired upon ', cellRight, 'cellBelow fired upon ', cellBelow, 'cellLeft fired upon ', cellLeft)
+
+    switch (tryAdjacent) {
+      case 0: !cellAbove ? console.log(playerGridArray[lastHitLocation - cols]) : console.log('don\'t fire above'); break
+      case 1: !cellRight ? console.log('fire right') : console.log('don\'t fire right'); break
+      case 2: !cellBelow ? console.log('fire below') : console.log('don\'t fire below'); break
+      case 3: !cellLeft ? console.log('fire left') : console.log('don\'t fire left'); break
+    }
+    // if (cellRight) {
+    //   // fire on right
+    //   // if hit keep firing on that axis until miss // if vessel not sunk go to other end
+    // }
+    // }
+
+    function guideMissile(possibleTarget) {
+      if (possibleTarget.classList.contains('vessel')) {
+        playerGridArray[cellBeingFiredUpon].classList.add('hit')
+      }
+    }
   }
+
 
 }
 
