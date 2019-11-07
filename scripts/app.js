@@ -25,14 +25,14 @@ function functionName() {
       // give each div element a coordinate
       computerCell.id = 'c' + x + ',' + y
       playerCell.id = x + ',' + y
-
-      // give each div visible coordinates for testing
-      // computerCell.innerHTML = x + ',' + y
-      // playerCell.innerHTML = x + ',' + y
     }
   }
 
+  // this html element selector needs to live here
   const playerGridArray = Array.from(playerGrid.children)
+
+  // globally defined variables
+
   // temporarily store vessel name selected by player when placing vessel on grid
   let vesselSelected
   // temporarily store vessel length selected by player when placing vessel on grid
@@ -57,6 +57,10 @@ function functionName() {
   let playerHit = 1
   // keep track of turns
   let turn
+  // store game state, 1 for on, 0 for off
+  let gameState = 0
+  // track cell index at mouse position
+  let indexMousePosition
 
   // class for vessels
   class vessel {
@@ -174,20 +178,13 @@ function functionName() {
   // player placement of vessels
   // on click of cell change corresponding values in playerBoard
 
-  let indexMousePosition
-
   startButton.addEventListener('click', () => {
-    // remove event listeners for playerBoard!
-    // for (const div of playerGrid.children) {
-    //   div.removeEventListener('mouseover', false)
-    //   div.removeEventListener('mouseout', false)
-    //   div.removeEventListener('click', false)
-    // }
+    if (gameState === 1) return
     deployFleet()
+    gameState = 1
     // random generator to determine who starts: 0 for computer, 1 for player
     turn = Math.floor(Math.random() * 2)
     playerTurn.innerHTML = 'Flipping coin to determine who starts'
-    // setTimeout(playerTurn.innerHTML = 'Flipping coin to determine who starts', 5000)
     turn === 0 ? playerTurn.innerHTML = 'Computer starts' : playerTurn.innerHTML = 'You start'
     while (turn === 0) {
       // playerTurn.innerHTML = 'Computer\'s turn'
@@ -201,24 +198,20 @@ function functionName() {
   document.addEventListener('keydown', (e) => {
     if (e.keyCode === 32) {
       orientationPlayerVessel = 1
-      console.log('orientation vertical')
     }
   })
   // if space bar key up set orientation to horizontal
   document.addEventListener('keyup', (e) => {
     if (e.keyCode === 32) {
       orientationPlayerVessel = 0
-      console.log('orientation horizontal')
     }
   })
 
   for (const button of vesselButtons) {
+    if (gameState === 1) return
     button.addEventListener('click', (e) => {
       sizeOfVesselSelected = armada[e.target.value].size
-      console.log(sizeOfVesselSelected)
       vesselSelected = armada[e.target.value]
-      // return vesselSelected
-      console.log(vesselSelected)
     })
   }
 
@@ -228,6 +221,7 @@ function functionName() {
   // add eventListeners for each cell in player grid
   for (const div of playerGrid.children) {
     div.addEventListener('mouseover', (e) => {
+      if (gameState === 1) return
       // grab the index of the cell mouse is over
       if (!validPosition(e.target.id, sizeOfVesselSelected, orientationPlayerVessel)) return
       indexMousePosition = Array.from(playerGrid.children).indexOf(e.target)
@@ -245,6 +239,7 @@ function functionName() {
     })
 
     div.addEventListener('mouseout', (e) => {
+      if (gameState === 1) return
       indexMousePosition = Array.from(playerGrid.children).indexOf(e.target)
       if (orientationPlayerVessel === 0) {
         for (let i = 0; i < sizeOfVesselSelected; i++) {
@@ -258,6 +253,7 @@ function functionName() {
     })
 
     div.addEventListener('click', (e) => {
+      if (gameState === 1) return
       if (!validPosition(e.target.id, sizeOfVesselSelected, orientationPlayerVessel)) return
       indexMousePosition = Array.from(playerGrid.children).indexOf(e.target)
       plonkShipPlayer(vesselSelected, orientationPlayerVessel, indexMousePosition)
@@ -292,12 +288,16 @@ function functionName() {
 
   for (const div of computerGrid.children) {
     div.addEventListener('mouseover', (e) => {
+      // why can't I have this condition outside for all three cases?
+      if (gameState === 0) return
       e.target.classList.toggle('vessel')
     })
     div.addEventListener('mouseout', (e) => {
+      if (gameState === 0) return
       e.target.classList.toggle('vessel')
     })
     div.addEventListener('click', (e) => {
+      if (gameState === 0) return
       playerTorpedo(e)
     })
   }
