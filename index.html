@@ -25,43 +25,45 @@
           <div class="instructions">
             <h2>Welcome aboard, sailor!</h2>
             <p>Instructions</p>
-            <p>First select a vessel then click on the left grid to place it. Hold down spacebar to change the
-              orientation. Once all vessels are placed get ready for battle!</p>
-              <button class="instructions-read">Launch vessels</button>
+            <p>First select a vessel then click on the left grid to place it.<br>Hold down spacebar to change the
+              orientation.<br>Once all vessels are placed get ready for battle!</p>
+            <button class="instructions-read">Launch vessels</button>
           </div>
           <div class="scoreboard">
-            <p id="turn">Click button to start</p>
-            <p>Your score is:</p>
-            <p class="score">-</p>
-          </div>
-        </div>
-        <div class="middle-bottom">
-          <div class="dashboard">
-            <div class="player-info">
-              <button value="0">Carrier</button>
-              <button value="1">Battleship</button>
-              <button value="2">Cruiser</button>
-              <button value="3">Destroyer</button>
-              <button value="4">Submarine</button>
+            <p id="turn">Deploy your fleet!</p>
+            <div class="show-score">
+                <p>Your score is: <span class="score">-</span></p>
+              </div>
+            <div class="deploy-fleet">
+              <div id="0" class="vessel-icon vessel-icon-outline carrier-outline">
+                <div class="vessel-selected vessel-icon-filled carrier-filled"></div>
+              </div>
+              <div id="1" class="vessel-icon vessel-icon-outline battleship-outline">
+                <div class="vessel-selected vessel-icon-filled battleship-filled"></div>
+              </div>
+              <div id="2" class="vessel-icon vessel-icon-outline cruiser-outline">
+                <div class="vessel-selected vessel-icon-filled cruiser-filled"></div>
+              </div>
+              <div id="3" class="vessel-icon vessel-icon-outline destroyer-outline">
+                <div class="vessel-selected vessel-icon-filled destroyer-filled"></div>
+              </div>
+              <div id="4" class="vessel-icon vessel-icon-outline submarine-outline">
+                <div class="vessel-selected vessel-icon-filled submarine-filled"></div>
+              </div>
             </div>
+          </div>
+          <div class="dashboard">
             <button class="commence">Battle stations!</button>
           </div>
         </div>
+        <div class="middle-bottom">
+        </div>
         <div class="computer-info"></div>
-        <!-- <div class="gameplay-info">
-                  <div class="vessel-icons carrier"></div>
-                  <div class="vessel-icons battleship"></div>
-                  <div class="vessel-icons cruiser"></div>
-                  <div class="vessel-icons destroyer"></div>
-                  <div class="vessel-icons submarine"></div>
-                </div> -->
       </div>
       <div class="right">
         <div class="grid" id="computer"></div>
       </div>
     </div>
   </div>
-
 </body>
-
 </html>

@@ -61,14 +61,20 @@ h1 {
 .scoreboard {
   display: none;
   flex-direction: column;
+  align-items: center;
+}
+
+.show-score {
+  display: none;
+  flex-direction: column;
 }
 
 .middle-bottom {
-  height: 50%
+  height: 50%;
 }
 
 .dashboard {
-  display: none
+  display: none;
 }
 
 .right {
@@ -147,46 +153,88 @@ h1 {
   flex-direction: column;
 }
 
-.vessel-icons {
-  background-color: green;
+.deploy-fleet {
   display: flex;
-  /* border: 1px solid red; */
-  /* height: inherit; */
-  /* position: relative; */
+  flex-direction: column;
+  align-items: center;
 }
 
-.carrier {
-  flex-grow: 5;
-  background-image: url(../images/carrier.png);
-  background-size: cover;
-  background-position: bottom;
+.vessel-icon-outline {
+  background-repeat: no-repeat;
+  position: relative;
 }
 
-.battleship {
-  flex-grow: 4;
-  background-image: url(../images/battleship.png);
-  background-size: cover;
-  background-position: bottom;
-  /* align-items: flex-end; */
+.vessel-icon-filled {
+  background-repeat: no-repeat;
+  position: absolute;
 }
 
-.cruiser {
-  flex-grow: 3;
-  background-image: url(../images/cruiser.png);
-  background-size: cover;
-  background-position: bottom;
+.carrier-outline {
+  background-image: url(../images/carrier-outline.png);
+  height: 90px;
+  width: 270px;
+  background-size: 270px 90px;
 }
 
-.destroyer {
-  flex-grow: 3;
-  background-image: url(../images/destroyer.png);
-  background-size: cover;
-  background-position: bottom;
+.carrier-filled {
+  background-image: url(../images/carrier-filled.png);
+  height: 90px;
+  width: 270px;
+  background-size: 270px 90px;
 }
 
-.submarine {
-  flex-grow: 2;
-  background-image: url(../images/submarine.png);
-  background-size: cover;
-  background-position: bottom;
+.battleship-outline {
+  background-image: url(../images/battleship-outline.png);
+  height: 60px;
+  width: 240px;
+  background-size: 240px 60px;
+}
+
+.battleship-filled {
+  background-image: url(../images/battleship-filled.png);
+  height: 60px;
+  width: 240px;
+  background-size: 240px 60px;
+}
+
+.cruiser-outline {
+  background-image: url(../images/cruiser-outline.png);
+  height: 60px;
+  width: 225px;
+  background-size: 225px 60px;
+}
+
+.cruiser-filled {
+  background-image: url(../images/cruiser-filled.png);
+  height: 60px;
+  width: 225px;
+  background-size: 225px 60px;
+}
+
+.destroyer-outline {
+  background-image: url(../images/destroyer-outline.png);
+  height: 60px;
+  width: 225px;
+  background-size: 225px 60px;
+}
+
+.destroyer-filled {
+  background-image: url(../images/destroyer-filled.png);
+  height: 60px;
+  width: 225px;
+  background-size: 225px 60px;
+}
+
+.submarine-outline {
+  background-image: url(../images/submarine-outline.png);
+  height: 40px;
+  width: 150px;
+  background-size: 150px 40px;
+}
+
+.submarine-filled {
+  background-image: url(../images/submarine-filled.png);
+  height: 40px;
+  width: 150px;
+  background-size: 150px 40px;
 }

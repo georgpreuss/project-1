@@ -9,7 +9,11 @@ function functionName() {
   const computerGrid = document.querySelector('#computer')
   const startButton = document.querySelector('.commence')
   const playerTurn = document.querySelector('#turn')
-  const vesselButtons = document.querySelector('.player-info').children
+  // const vesselButtons = document.querySelector('.player-info').children
+  // console.log(vesselButtons)
+  // const vesselIcons = document.querySelector('.deploy-fleet').children
+  // const vesselIcons = Array.from(document.querySelectorAll('.vessel-selected'))
+  const vesselIcons = document.querySelectorAll('.vessel-icon')
   const showScore = document.querySelector('.score')
   const instructionsRead = document.querySelector('.instructions-read')
 
@@ -189,6 +193,7 @@ function functionName() {
     // if (gameState === 1) return
     // if not all player vessels placed return
     startButton.style.display = 'none'
+    document.querySelector('.show-score').style.display = 'inherit'
     deployFleet()
     gameState = 1
     // random generator to determine who starts: 0 for computer, 1 for player
@@ -204,25 +209,36 @@ function functionName() {
   })
 
   // if space bar key down set orientation to vertical
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keypress', (e) => {
     if (e.keyCode === 32) {
-      orientationPlayerVessel = 1
+      // TODO maybe??? add a nice call to _ClearBoardOfAllHighlightsIDontWantToSeeAGain
+      orientationPlayerVessel = orientationPlayerVessel === 0 ? 1 : 0
+      // TODO = somehow re-highlight the board?
     }
   })
   // if space bar key up set orientation to horizontal
-  document.addEventListener('keyup', (e) => {
-    if (e.keyCode === 32) {
-      orientationPlayerVessel = 0
+  // document.addEventListener('keyup', (e) => {
+  //   if (e.keyCode === 32) {
+  //     orientationPlayerVessel = 0
+  //   }
+  // })
+
+  vesselIcons.forEach((icon) => {
+    if (gameState !== 1) {
+      icon.addEventListener('click', () => {
+        sizeOfVesselSelected = armada[icon.id].size
+        vesselSelected = armada[icon.id]
+      })
     }
   })
 
-  for (const button of vesselButtons) {
-    if (gameState === 1) return
-    button.addEventListener('click', (e) => {
-      sizeOfVesselSelected = armada[e.target.value].size
-      vesselSelected = armada[e.target.value]
-    })
-  }
+  // for (const button of vesselButtons) {
+  //   if (gameState === 1) return
+  //   button.addEventListener('click', (e) => {
+  //     sizeOfVesselSelected = armada[e.target.value].size
+  //     vesselSelected = armada[e.target.value]
+  //   })
+  // }
 
   // create array of playerGrid html elements so I can manipulate by index
   // const playerGridArray = Array.from(playerGrid.children)
@@ -230,7 +246,7 @@ function functionName() {
   // add eventListeners for each cell in player grid
   for (const div of playerGrid.children) {
     div.addEventListener('mouseover', (e) => {
-      if (gameState === 1) return
+      if (gameState === 1 || !sizeOfVesselSelected) return
       // grab the index of the cell mouse is over
       if (!validPosition(e.target.id, sizeOfVesselSelected, orientationPlayerVessel)) return
       indexMousePosition = Array.from(playerGrid.children).indexOf(e.target)
@@ -240,6 +256,7 @@ function functionName() {
           playerGridArray[indexMousePosition + i].classList.toggle('vessel-hover')
         }
       } else {
+        console.log('test')
         for (let i = 0; i < sizeOfVesselSelected; i++) {
           // playerGridArray[indexMousePosition + i + 1].classList.remove('vessel')
           playerGridArray[indexMousePosition + (10 * i)].classList.toggle('vessel-hover')
@@ -256,6 +273,7 @@ function functionName() {
         }
       } else {
         for (let i = 0; i < sizeOfVesselSelected; i++) {
+          // TODO replace this with a nice call to _ClearBoardOfAllHighlightsIDontWantToSeeAGain
           playerGridArray[indexMousePosition + (10 * i)].classList.remove('vessel-hover')
         }
       }
@@ -266,9 +284,13 @@ function functionName() {
       if (!validPosition(e.target.id, sizeOfVesselSelected, orientationPlayerVessel)) return
       indexMousePosition = Array.from(playerGrid.children).indexOf(e.target)
       plonkShipPlayer(vesselSelected, orientationPlayerVessel, indexMousePosition)
+      sizeOfVesselSelected = null
+      vesselSelected = null
+      // TODO : Refactor this into it's own function called _ClearBoardOfAllHighlightsIDontWantToSeeAGain
+      document.querySelectorAll('.vessel-hover').forEach((elem) => elem.classList.remove('vessel-hover'))
     })
   }
-  
+
   function plonkShipPlayer(vessel, orientation, index) {
     const getX = parseInt(playerGridArray[index].id[0])
     const getY = parseInt(playerGridArray[index].id[2])
