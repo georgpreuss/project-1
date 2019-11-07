@@ -21,11 +21,32 @@
         <div class="grid" id="player"></div>
       </div>
       <div class="middle">
-        
-        <p id="turn">Click button to start</p>
-        
-        <p>Your score is:</p>
-        <p class="score"></p>
+        <div class="middle-top">
+          <div class="instructions">
+            <h2>Welcome aboard, sailor!</h2>
+            <p>Instructions</p>
+            <p>First select a vessel then click on the left grid to place it. Hold down spacebar to change the
+              orientation. Once all vessels are placed get ready for battle!</p>
+              <button class="instructions-read">Launch vessels</button>
+          </div>
+          <div class="scoreboard">
+            <p id="turn">Click button to start</p>
+            <p>Your score is:</p>
+            <p class="score">-</p>
+          </div>
+        </div>
+        <div class="middle-bottom">
+          <div class="dashboard">
+            <div class="player-info">
+              <button value="0">Carrier</button>
+              <button value="1">Battleship</button>
+              <button value="2">Cruiser</button>
+              <button value="3">Destroyer</button>
+              <button value="4">Submarine</button>
+            </div>
+            <button class="commence">Battle stations!</button>
+          </div>
+        </div>
         <div class="computer-info"></div>
         <!-- <div class="gameplay-info">
                   <div class="vessel-icons carrier"></div>
@@ -34,25 +55,9 @@
                   <div class="vessel-icons destroyer"></div>
                   <div class="vessel-icons submarine"></div>
                 </div> -->
-        <div class="nuclear-football">
-          <div class="case-back">
-              <div class="player-info">
-                  <button value="0" id="carrier">Carrier</button>
-                  <button value="1" id="battleship">Battleship</button>
-                  <button value="2" id="cruiser">Cruiser</button>
-                  <button value="3" id="destroyer">Destroyer</button>
-                  <button value="4" id="submarine">Submarine</button>
-                </div>
-          </div>
-          <div class="case-bottom">
-              <button class="commence">Let Battle Commence</button>
-          </div>
-        </div>
       </div>
       <div class="right">
-        <!-- <div class="game-3d"> -->
         <div class="grid" id="computer"></div>
-        <!-- </div> -->
       </div>
     </div>
   </div>

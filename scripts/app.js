@@ -11,6 +11,7 @@ function functionName() {
   const playerTurn = document.querySelector('#turn')
   const vesselButtons = document.querySelector('.player-info').children
   const showScore = document.querySelector('.score')
+  const instructionsRead = document.querySelector('.instructions-read')
 
   // create html elements with xy coordinates for each of the gameboards
   for (let y = 0; y < cols; y++) {
@@ -178,8 +179,16 @@ function functionName() {
   // player placement of vessels
   // on click of cell change corresponding values in playerBoard
 
+  instructionsRead.addEventListener('click', () => {
+    document.querySelector('.instructions').remove()
+    document.querySelector('.scoreboard').style.display = 'flex'
+    document.querySelector('.dashboard').style.display = 'flex'
+  })
+
   startButton.addEventListener('click', () => {
-    if (gameState === 1) return
+    // if (gameState === 1) return
+    // if not all player vessels placed return
+    startButton.style.display = 'none'
     deployFleet()
     gameState = 1
     // random generator to determine who starts: 0 for computer, 1 for player
@@ -306,6 +315,8 @@ function functionName() {
     // if cell clicked extract coordinates
     const checkX = e.target.id.split('')[1]
     const checkY = e.target.id.split('')[3]
+    // if cell already clicked return
+    if (document.getElementById(`c${checkX},${checkY}`).classList.contains('hit')) return
     // check value of cell clicked
     if (computerBoard[checkY][checkX] === 0) {
       // if cell value is 0 add class miss
