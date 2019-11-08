@@ -9,13 +9,10 @@ function functionName() {
   const computerGrid = document.querySelector('#computer')
   const startButton = document.querySelector('.commence')
   const playerTurn = document.querySelector('#turn')
-  // const vesselButtons = document.querySelector('.player-info').children
-  // console.log(vesselButtons)
-  // const vesselIcons = document.querySelector('.deploy-fleet').children
-  // const vesselIcons = Array.from(document.querySelectorAll('.vessel-selected'))
   const vesselIcons = document.querySelectorAll('.vessel-icon')
   const showScore = document.querySelector('.score')
   const instructionsRead = document.querySelector('.instructions-read')
+  const audio = document.querySelector('audio')
 
   // create html elements with xy coordinates for each of the gameboards
   for (let y = 0; y < cols; y++) {
@@ -46,7 +43,7 @@ function functionName() {
   let orientationPlayerVessel = 0
   // computerTorpedo function to start with array of all indices
   // this array will be reduced to not fire on the same cell more than once
-  let cellsNotFiredUpon = Array.from(Array(100).keys())
+  const cellsNotFiredUpon = Array.from(Array(100).keys())
   // keep track of player score
   let score = 0
   // keep track of computer score
@@ -175,9 +172,6 @@ function functionName() {
         }
       }
     })
-    console.log(computerBoard)
-    console.log(computerBoard.join(','))
-
   }
 
   // player placement of vessels
@@ -192,6 +186,13 @@ function functionName() {
   startButton.addEventListener('click', () => {
     // if (gameState === 1) return
     // if not all player vessels placed return
+    audio.src = 'sounds/battle-stations.mp3'
+    audio.currentTime = 5
+    audio.play()
+    setTimeout(() => {
+      audio.pause()
+      audio.currentTime = 0
+    },7500)
     startButton.style.display = 'none'
     document.querySelector('.show-score').style.display = 'inherit'
     deployFleet()
@@ -216,12 +217,6 @@ function functionName() {
       // TODO = somehow re-highlight the board?
     }
   })
-  // if space bar key up set orientation to horizontal
-  // document.addEventListener('keyup', (e) => {
-  //   if (e.keyCode === 32) {
-  //     orientationPlayerVessel = 0
-  //   }
-  // })
 
   vesselIcons.forEach((icon) => {
     if (gameState !== 1) {
@@ -231,17 +226,6 @@ function functionName() {
       })
     }
   })
-
-  // for (const button of vesselButtons) {
-  //   if (gameState === 1) return
-  //   button.addEventListener('click', (e) => {
-  //     sizeOfVesselSelected = armada[e.target.value].size
-  //     vesselSelected = armada[e.target.value]
-  //   })
-  // }
-
-  // create array of playerGrid html elements so I can manipulate by index
-  // const playerGridArray = Array.from(playerGrid.children)
 
   // add eventListeners for each cell in player grid
   for (const div of playerGrid.children) {
@@ -256,9 +240,7 @@ function functionName() {
           playerGridArray[indexMousePosition + i].classList.toggle('vessel-hover')
         }
       } else {
-        console.log('test')
         for (let i = 0; i < sizeOfVesselSelected; i++) {
-          // playerGridArray[indexMousePosition + i + 1].classList.remove('vessel')
           playerGridArray[indexMousePosition + (10 * i)].classList.toggle('vessel-hover')
         }
       }
@@ -284,6 +266,23 @@ function functionName() {
       if (!validPosition(e.target.id, sizeOfVesselSelected, orientationPlayerVessel)) return
       indexMousePosition = Array.from(playerGrid.children).indexOf(e.target)
       plonkShipPlayer(vesselSelected, orientationPlayerVessel, indexMousePosition)
+      checkVesselHealth()
+      // refactor this!!
+      if (uniqueChars['a'] === 5) {
+        document.querySelector('.carrier-filled').style.width = '100%'
+      }
+      if (uniqueChars['b'] === 4) {
+        document.querySelector('.battleship-filled').style.width = '100%'
+      }
+      if (uniqueChars['c'] === 3) {
+        document.querySelector('.cruiser-filled').style.width = '100%'
+      }
+      if (uniqueChars['d'] === 3) {
+        document.querySelector('.destroyer-filled').style.width = '100%'
+      }
+      if (uniqueChars['s'] === 2) {
+        document.querySelector('.submarine-filled').style.width = '100%'
+      }
       sizeOfVesselSelected = null
       vesselSelected = null
       // TODO : Refactor this into it's own function called _ClearBoardOfAllHighlightsIDontWantToSeeAGain
@@ -317,6 +316,28 @@ function functionName() {
     }
   }
 
+  let uniqueChars
+  function checkVesselHealth() {
+    uniqueChars = {}
+    const playerBoardAsString = playerBoard.join('')
+    playerBoardAsString.replace(/\S/g, function(l){uniqueChars[l] = (isNaN(uniqueChars[l]) ? 1 : uniqueChars[l] + 1)})
+    return uniqueChars
+  }
+
+  function whoWins() {
+    if (score === 170 && computerScore < 170) {
+      // player wins
+      playerTurn.innerHTML = 'You win!'
+      gameState = 0
+    } else if (score < 170 && computerScore === 170) {
+      // computer wins
+      playerTurn.innerHTML = 'Computer wins!'
+    } else {
+      // game not finished yet
+      console.log('keep playing')
+    }
+  }
+
   for (const div of computerGrid.children) {
     div.addEventListener('mouseover', (e) => {
       // why can't I have this condition outside for all three cases?
@@ -345,6 +366,8 @@ function functionName() {
       document.getElementById(`c${checkX},${checkY}`).classList.add('miss')
       playerHit = 0
       turn = 0
+      audio.src = 'sounds/ship-miss.mp3'
+      audio.play()
       while (turn === 0) {
         playerTurn.innerHTML = 'Your turn'
         computerTorpedo()
@@ -355,33 +378,77 @@ function functionName() {
       score += 10
       showScore.innerHTML = score
       playerHit = 1
+      audio.src = 'sounds/ship-part-explosion.mp3'
+      audio.play()
+      whoWins()
     } return playerHit
   }
 
   function computerTorpedo() {
     // pick one at random and fire
     const cellBeingFiredUpon = cellsNotFiredUpon[Math.floor(Math.random() * cellsNotFiredUpon.length)]
-    console.log('cell being fired upon is ', cellBeingFiredUpon)
     // if class === vessel register as hit
     if (playerGridArray[cellBeingFiredUpon].classList.contains('vessel')) {
       playerGridArray[cellBeingFiredUpon].classList.add('hit')
       // if hit, then remove that index from array
+
+      const getX = playerGridArray[cellBeingFiredUpon].id[0]
+      const getY = playerGridArray[cellBeingFiredUpon].id[2]
+      playerBoard[getY][getX] = 'x'
       const lastHitLocation = cellsNotFiredUpon.indexOf(cellBeingFiredUpon)
       cellsNotFiredUpon.splice(lastHitLocation, 1)
       // if hit vessel set hit to 1
       computerScore += 10
       computerHit = 1
       turn = 0
+      whoWins()
       // add below for more AI
       // while (computerHit === 1) {
       laserGuidance(cellBeingFiredUpon)
       // }
+      checkVesselHealth()
+      // refactor this!
+
+      let widthPercentA
+      let widthPercentB
+      let widthPercentC
+      let widthPercentD
+      let widthPercentS
+      if (!uniqueChars['a']) {
+        widthPercentA = 0
+      } else {
+        widthPercentA = uniqueChars['a'] / 5 * 100
+      }
+      document.querySelector('.carrier-filled').style.width = `${widthPercentA}%`
+      if (!uniqueChars['b']) {
+        widthPercentB = 0
+      } else {
+        widthPercentB = uniqueChars['b'] / 4 * 100
+      }
+      document.querySelector('.battleship-filled').style.width = `${widthPercentB}%`
+      if (!uniqueChars['c']) {
+        widthPercentC = 0
+      } else {
+        widthPercentC = uniqueChars['c'] / 3 * 100
+      }
+      document.querySelector('.cruiser-filled').style.width = `${widthPercentC}%`
+      if (!uniqueChars['d']) {
+        widthPercentD = 0
+      } else {
+        widthPercentD = uniqueChars['d'] / 3 * 100
+      }
+      document.querySelector('.destroyer-filled').style.width = `${widthPercentD}%`
+      if (!uniqueChars['s']) {
+        widthPercentS = 0
+      } else {
+        widthPercentS = uniqueChars['s'] / 2 * 100
+      }
+      document.querySelector('.submarine-filled').style.width = `${widthPercentS}%`
     } else {
       // change cell class to miss
       playerGridArray[cellBeingFiredUpon].classList.add('miss')
       // remove number from array
       cellsNotFiredUpon.splice(cellsNotFiredUpon.indexOf(cellBeingFiredUpon), 1)
-      console.log('cells not fired upon ', cellsNotFiredUpon)
       // if hit unsuccessful set hit to 0
       computerHit = 0
       turn = 1
@@ -397,10 +464,10 @@ function functionName() {
     const cellRight = !cellsNotFiredUpon.includes(lastHitLocation + 1)
     const cellBelow = !cellsNotFiredUpon.includes(lastHitLocation + cols)
     const cellLeft = !cellsNotFiredUpon.includes(lastHitLocation - 1)
-    console.log('torpedo just hit boat on ', lastHitLocation, 'coordinates are ', playerGridArray[lastHitLocation].id)
-    console.log('cells not fired upon include ', cellsNotFiredUpon)
-    console.log('direction (0 above, 1 right, 2 below, 3 left) is ', tryAdjacent)
-    console.log('cellAbove fired upon ', cellAbove, 'cellRight fired upon ', cellRight, 'cellBelow fired upon ', cellBelow, 'cellLeft fired upon ', cellLeft)
+    // console.log('torpedo just hit boat on ', lastHitLocation, 'coordinates are ', playerGridArray[lastHitLocation].id)
+    // console.log('cells not fired upon include ', cellsNotFiredUpon)
+    // console.log('direction (0 above, 1 right, 2 below, 3 left) is ', tryAdjacent)
+    // console.log('cellAbove fired upon ', cellAbove, 'cellRight fired upon ', cellRight, 'cellBelow fired upon ', cellBelow, 'cellLeft fired upon ', cellLeft)
 
     switch (tryAdjacent) {
       case 0: !cellAbove ? console.log(playerGridArray[lastHitLocation - cols]) : console.log('don\'t fire above'); break

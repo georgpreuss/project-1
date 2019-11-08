@@ -69,10 +69,6 @@ h1 {
   flex-direction: column;
 }
 
-.middle-bottom {
-  height: 50%;
-}
-
 .dashboard {
   display: none;
 }
@@ -171,70 +167,75 @@ h1 {
 
 .carrier-outline {
   background-image: url(../images/carrier-outline.png);
-  height: 90px;
-  width: 270px;
-  background-size: 270px 90px;
+  height: 80px;
+  width: 250px;
+  background-size: 250px 80px;
 }
 
 .carrier-filled {
   background-image: url(../images/carrier-filled.png);
-  height: 90px;
-  width: 270px;
-  background-size: 270px 90px;
+  height: 80px;
+  width: 0%;
+  background-size: 250px 80px;
+  transition: ease 1s;
 }
 
 .battleship-outline {
   background-image: url(../images/battleship-outline.png);
-  height: 60px;
-  width: 240px;
-  background-size: 240px 60px;
+  height: 80px;
+  width: 250px;
+  background-size: 250px 80px;
 }
 
 .battleship-filled {
   background-image: url(../images/battleship-filled.png);
-  height: 60px;
-  width: 240px;
-  background-size: 240px 60px;
+  height: 80px;
+  width: 0%;
+  background-size: 250px 80px;
+  transition: ease 1s;
 }
 
 .cruiser-outline {
   background-image: url(../images/cruiser-outline.png);
-  height: 60px;
-  width: 225px;
-  background-size: 225px 60px;
+  height: 80px;
+  width: 250px;
+  background-size: 250px 80px;
 }
 
 .cruiser-filled {
   background-image: url(../images/cruiser-filled.png);
-  height: 60px;
-  width: 225px;
-  background-size: 225px 60px;
+  height: 80px;
+  width: 0%;
+  background-size: 250px 80px;
+  transition: ease 1s;
 }
 
 .destroyer-outline {
   background-image: url(../images/destroyer-outline.png);
-  height: 60px;
-  width: 225px;
-  background-size: 225px 60px;
+  height: 80px;
+  width: 250px;
+  background-size: 250px 80px;
 }
 
 .destroyer-filled {
   background-image: url(../images/destroyer-filled.png);
-  height: 60px;
-  width: 225px;
-  background-size: 225px 60px;
+  height: 80px;
+  width: 0%;
+  background-size: 250px 80px;
+  transition: ease 1s;
 }
 
 .submarine-outline {
   background-image: url(../images/submarine-outline.png);
-  height: 40px;
-  width: 150px;
-  background-size: 150px 40px;
+  height: 50px;
+  width: 170px;
+  background-size: 170px 50px;
 }
 
 .submarine-filled {
   background-image: url(../images/submarine-filled.png);
-  height: 40px;
-  width: 150px;
-  background-size: 150px 40px;
+  height: 50px;
+  width: 0%;
+  background-size: 170px 50px;
+  transition: ease 1s;
 }
