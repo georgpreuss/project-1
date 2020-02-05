@@ -32,22 +32,23 @@ You can launch the game on GitHub pages [here](https://georgpreuss.github.io/pro
 ### Board layout
 - I decided to create a 2D rather than a 1D grid using a nested for loop:
 
-	```
+```
  // create html elements with xy coordinates for each of the gameboards
   for (let y = 0; y < cols; y++) {
-    	for (let x = 0; x < rows; x++) {
+    for (let x = 0; x < rows; x++) {
 
-      		// create a new div for each grid cell
-      		const computerCell = document.createElement('div')
-      		computerGrid.appendChild(computerCell)
-      		const playerCell = document.createElement('div')
-      		playerGrid.appendChild(playerCell)
+      // create a new div for each grid cell
+      const computerCell = document.createElement('div')
+      computerGrid.appendChild(computerCell)
+      const playerCell = document.createElement('div')
+      playerGrid.appendChild(playerCell)
 
-      		// give each div element a coordinate
-      		computerCell.id = 'c' + x + ',' + y
-      		playerCell.id = x + ',' + y
-    	}
+      // give each div element a coordinate
+      computerCell.id = 'c' + x + ',' + y
+      playerCell.id = x + ',' + y
+    }
   }
+``` 
   	
 - This made life a lot easier when it came to creating the randomised vessel placement and computer torpedo functions as I could then base these on an xy coordinate system
 
@@ -56,8 +57,8 @@ You can launch the game on GitHub pages [here](https://georgpreuss.github.io/pro
 	- 0 = water, a = aircraft carrier, b = battleship, c = cruiser, d = destroyer, s = submarine, x = sunk part, o = miss
 	- the state of each cell is stored in an array of arrays and is initialised as follows:
 
-	```
-	const computerBoard = [
+```
+ const computerBoard = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -68,12 +69,13 @@ You can launch the game on GitHub pages [here](https://georgpreuss.github.io/pro
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  ]
+  ]	
+```
   
 ### Vessel placement (computer player)
 - To prevent vessels from overlapping or going out of bounds I wrote an `anchor` function that first randomly selects an orientation (horizontal or vertical) and then a coordinate for a vessel's 'anchor'. The anchor is always going to be the leftmost or topmost part of a vessel. It takes the vessel as an argument to ensure that the anchors it provides can only be valid ones, i.e. vessels can't go off the grid:
 
-	```
+```
 function anchor(vessel) {
     // generate random number for orientation - 0 for horizontal, 1 for vertical
     orientation = Math.floor(Math.random() * 2)
@@ -88,12 +90,11 @@ function anchor(vessel) {
     }
     return [orientation, randomY, randomX]
   }
-  
-  
+```  
   
 - A `checkSpace` function then makes sure that there is enough space for a proposed anchor and given vessel length, so it can't overlap with another vessel:
 
-	```
+```
 // take random anchor and check adjacent cells for space
   function checkSpace(vessel, orientation, randomY, randomX) {
     if (orientation === 0) {
@@ -115,10 +116,11 @@ function anchor(vessel) {
     }
     return 1
   }
+```
 
 - Finally, when all checks are passed successfully the `plonkShip` function notes down the type and location of each vessel on the grid:
 
-	```
+```
   function plonkShip(vessel, orientation, randomY, randomX) {
     for (let i = 0; i < vessel.size; i++) {
       if (orientation === 0) {
@@ -128,6 +130,7 @@ function anchor(vessel) {
       }
     }
   }
+```
 
 - all these functions are called in a `deployFleet` function which runs once at the start of each game until all vessels are placed
 
@@ -137,7 +140,7 @@ function anchor(vessel) {
 - Pressing the spacebar will change the orientation and hovering over the board with the cursor will show you where the vessel will be placed upon click
 - In order to prevent the user from placing vessels across multiple rows or columns I added a `validPosition` function which gets called every time a cell is clicked:
 
-	```
+```
  function validPosition(id, length, orientation) {
     if (orientation === 0) {
       return parseInt(id.split(',')[0]) + length > cols ? false : true
@@ -145,6 +148,7 @@ function anchor(vessel) {
       return parseInt(id.split(',')[1]) + length > rows ? false : true
     }
   }
+```
 
 - it takes as arguments the id of the html cell, which contains coordinate information, and the length of the currently selected vessel as well as the orientation
 - during board set up an event listener calls this function on each click and only proceeds with placing a vessel if `validPosition` returns true
