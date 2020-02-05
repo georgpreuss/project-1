@@ -19,7 +19,7 @@ You can launch the game on GitHub pages [here](https://georgpreuss.github.io/pro
 - **Deploy your game online**, where the rest of the world can access it
 - Use **semantic markup** for HTML and CSS (adhere to best practices)
 
-##Technologies used
+## Technologies used
 
 - HTML
 - CSS
@@ -28,8 +28,8 @@ You can launch the game on GitHub pages [here](https://georgpreuss.github.io/pro
 - Photoshop
 - Google Fonts
 
-##Approach
-###Board layout
+## Approach
+### Board layout
 - I decided to create a 2D rather than a 1D grid using a nested for loop:
 
 	```
@@ -51,7 +51,7 @@ You can launch the game on GitHub pages [here](https://georgpreuss.github.io/pro
   	
 - This made life a lot easier when it came to creating the randomised vessel placement and computer torpedo functions as I could then base these on an xy coordinate system
 
-###Keeping track of cell state
+### Keeping track of cell state
 - I designed the game in such a way that each cell can take one of  8 states:
 	- 0 = water, a = aircraft carrier, b = battleship, c = cruiser, d = destroyer, s = submarine, x = sunk part, o = miss
 	- the state of each cell is stored in an array of arrays and is initialised as follows:
@@ -70,7 +70,7 @@ You can launch the game on GitHub pages [here](https://georgpreuss.github.io/pro
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   ]
   
-###Vessel placement (computer player)
+### Vessel placement (computer player)
 - To prevent vessels from overlapping or going out of bounds I wrote an `anchor` function that first randomly selects an orientation (horizontal or vertical) and then a coordinate for a vessel's 'anchor'. The anchor is always going to be the leftmost or topmost part of a vessel. It takes the vessel as an argument to ensure that the anchors it provides can only be valid ones, i.e. vessels can't go off the grid:
 
 	```
@@ -131,7 +131,7 @@ function anchor(vessel) {
 
 - all these functions are called in a `deployFleet` function which runs once at the start of each game until all vessels are placed
 
-###Vessel placement (human player)
+### Vessel placement (human player)
 - Like with the computerBoard, the state of each cell is tracked in an array of arrays (humanBoard)
 - The user first clicks the green outline of a vessel type to select it
 - Pressing the spacebar will change the orientation and hovering over the board with the cursor will show you where the vessel will be placed upon click
@@ -150,17 +150,17 @@ function anchor(vessel) {
 - during board set up an event listener calls this function on each click and only proceeds with placing a vessel if `validPosition` returns true
 - when a vessel is placed the CSS of the corresponding cells change and the correspondong values in the humanBoard get updated, e.g. 5 instances of 0 would get updated to 'a'
 
-###Torpedo function (computer player)
+### Torpedo function (computer player)
 - The computer player currently isn't very smart and only selects a target at random
 - However, to ensure it doesn't fire on the same cell more than once I have added some logic:
 	- Before each 'torpedo launch', the computer refers to an array containing the index positions of all the cells that haven't been fired upon yet (`cellsNotFiredUpon`)
 	- `cellsNotFiredUpon` is continuously updated each time the torpedo either hits or misses (the indices of the cells that have been fired upon are removed from the array)
 
-###Torpedo function (human player)
+### Torpedo function (human player)
 - The code for the human player's torpedo is much simpler
 - Upon each click of a cell, the program refers to the humanBoard: if the cell contains a vessel it will register as a hit, otherwise as a miss
 
-###Variables
+### Variables
 - Some of the variables I used in this game include:
 	- `gameState` toggles the event listeners needed to place vessels at the start of the game as well as the cell highlighting when one hovers over the board
 	- `computerHit` / `playerHit` check if the last torpedo fired hit a vessel, otherwise the turn ends
@@ -168,14 +168,15 @@ function anchor(vessel) {
 	- `score` and `computerScore` keep track of the players' scores as the name suggests
 	
 	
-##Screenshots
+## Screenshots
+Coming soon
 
-##Bugs
+## Bugs
 - Unfortunately, there are still a few bugs that I didn't address yet, the biggest one beeing the sub-optimal turn-based game behaviour: I didn't add the necessary timers to delay the computer player's torpedo firing
 - There is also a bug when you change the orientation by pressing the space bar before placing vessels: cell highlighting doesn't update properly when at the time of pressing the space bar you are hovering over the board
 
 
-##Potential future features
+## Potential future features
 - A scoreboard
 - Mobile compatibility
 - More intuitive vessel placement
@@ -184,6 +185,6 @@ function anchor(vessel) {
 	- initially I had thought of ways to make the computer smarter by targeting cells adjacent to recent hits, but ran out of time
 
 
-##Lessons learned
+## Lessons learned
 - I changed my mind multiple times throughout the project, changing designs or logic approaches which cost me valuable time. In future, I will spend more time planning out the design and hopefully also benefit from more experience
 - Don't forget about KISS: creating the vessel health images was quite a complicated and time consuming task layering multiple transparent images
