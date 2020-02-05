@@ -1,15 +1,15 @@
-###![GA](https://cloud.githubusercontent.com/assets/40461/8183776/469f976e-1432-11e5-8199-6ac91363302b.png) General Assembly, Software Engineering Immersive
+### ![GA](https://cloud.githubusercontent.com/assets/40461/8183776/469f976e-1432-11e5-8199-6ac91363302b.png) General Assembly, Software Engineering Immersive
 
-#Operation Steel Sabre
+# Operation Steel Sabre
 
-##Overview
+## Overview
 Operation Steel Sabre is an entertaining browser-based guessing game. It is very much like the original paper-based game, only here you play against a computer trying to sink the computer player's fleet before it sinks yours.
 
 This was my first project from General Assembly's Software Engineering Immersive Course. It was an **individual** project built in **one week**, and was both the first proper game I had built, and my first real-world type practice with JavaScript.
 
 You can launch the game on GitHub pages [here](https://georgpreuss.github.io/project-1/), or find the GitHub repo [here](https://github.com/georgpreuss/project-1/).
 
-##Brief
+## Brief
 
 - **Render a game in the browser**
 - **Design logic for winning & visually display which player won**
