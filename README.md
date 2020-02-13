@@ -3,7 +3,7 @@
 # Operation Steel Sabre
 
 ## Overview
-Operation Steel Sabre is an entertaining browser-based guessing game. It is very much like the original paper-based game, only here you play against a computer trying to sink the computer player's fleet before it sinks yours.
+Operation Steel Sabre is an entertaining browser-based guessing game. It is very much like the original game, only here you play against a computer trying to sink the computer player's fleet before it sinks yours.
 
 This was my first project from General Assembly's Software Engineering Immersive Course. It was an **individual** project built in **one week**, and was both the first proper game I had built, and my first real-world type practice with JavaScript.
 
@@ -173,7 +173,9 @@ function anchor(vessel) {
 	
 	
 ## Screenshots
-Coming soon
+![Fleet deployment](./docs/LandingPage.png)
+![Game play](./docs/GamePlay.png)
+
 
 ## Bugs
 - Unfortunately, there are still a few bugs that I didn't address yet, the biggest one beeing the sub-optimal turn-based game behaviour: I didn't add the necessary timers to delay the computer player's torpedo firing
